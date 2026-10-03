@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 const AddProductPage = () => {
   const navigate = useNavigate();
 
-  // Har field ke liye ek state
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -14,23 +13,6 @@ const AddProductPage = () => {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [isVerified, setIsVerified] = useState(false);
-
-  // POST request bhejne wala function
-  const addProduct = async (newProduct) => {
-    const res = await fetch("/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newProduct),
-    });
-
-    if (!res.ok) {
-      console.error("Failed to add product");
-      return false;
-    }
-    return true;
-  };
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -49,17 +31,33 @@ const AddProductPage = () => {
       },
     };
 
-    const success = await addProduct(newProduct);
-    if (success) {
+    try {
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      if (!res.ok) {
+        console.error("Failed to add product");
+        return;
+      }
+
       navigate("/");
+    } catch (error) {
+      console.error("Error adding product:", error);
     }
   };
 
   return (
     <div className="create">
       <h2>Add a New Product</h2>
+
       <form onSubmit={submitForm}>
         <label>Product Name:</label>
+
         <input
           type="text"
           required
@@ -68,6 +66,7 @@ const AddProductPage = () => {
         />
 
         <label>Category:</label>
+
         <select
           required
           value={category}
@@ -82,13 +81,15 @@ const AddProductPage = () => {
         </select>
 
         <label>Description:</label>
+
         <textarea
           required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-        ></textarea>
+        />
 
         <label>Price:</label>
+
         <input
           type="number"
           required
@@ -97,49 +98,66 @@ const AddProductPage = () => {
         />
 
         <label>Inventory Count:</label>
+
         <input
           type="number"
           required
           value={inventoryCount}
-          onChange={(e) => setInventoryCount(e.target.value)}
+          onChange={(e) =>
+            setInventoryCount(e.target.value)
+          }
         />
 
         <h3>Supplier</h3>
 
         <label>Supplier Name:</label>
+
         <input
           type="text"
           required
           value={supplierName}
-          onChange={(e) => setSupplierName(e.target.value)}
+          onChange={(e) =>
+            setSupplierName(e.target.value)
+          }
         />
 
         <label>Contact Email:</label>
+
         <input
           type="email"
           required
           value={contactEmail}
-          onChange={(e) => setContactEmail(e.target.value)}
+          onChange={(e) =>
+            setContactEmail(e.target.value)
+          }
         />
 
         <label>Contact Phone:</label>
+
         <input
           type="text"
           required
           value={contactPhone}
-          onChange={(e) => setContactPhone(e.target.value)}
+          onChange={(e) =>
+            setContactPhone(e.target.value)
+          }
         />
 
         <label>
           <input
             type="checkbox"
             checked={isVerified}
-            onChange={(e) => setIsVerified(e.target.checked)}
+            onChange={(e) =>
+              setIsVerified(e.target.checked)
+            }
           />
-          Verified supplier
+
+          {" "}Verified supplier
         </label>
 
-        <button>Add Product</button>
+        <button type="submit">
+          Add Product
+        </button>
       </form>
     </div>
   );
