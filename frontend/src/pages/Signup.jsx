@@ -1,48 +1,35 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useField from "../hooks/useField";
+import useSignup from "../hooks/useSignup";
 
 const Signup = ({ setIsAuthenticated }) => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [accountType, setAccountType] = useState("");
-  const [error, setError] = useState(null);
+  const fullName = useField("text");
+  const email = useField("email");
+  const password = useField("password");
+  const phoneNumber = useField("text");
+  const gender = useField("text");
+  const dateOfBirth = useField("date");
+  const accountType = useField("text");
 
+  const { signup, error } = useSignup("/api/users/signup");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
 
-    try {
-      const res = await fetch("/api/users/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName,
-          email,
-          password,
-          phoneNumber,
-          gender,
-          date_of_birth: dateOfBirth,
-          accountType,
-        }),
-      });
-      const data = await res.json();
+    const data = await signup({
+      fullName: fullName.value,
+      email: email.value,
+      password: password.value,
+      phoneNumber: phoneNumber.value,
+      gender: gender.value,
+      date_of_birth: dateOfBirth.value,
+      accountType: accountType.value,
+    });
 
-      if (!res.ok) {
-        setError(data.error || "Signup failed");
-        return;
-      }
-
-      localStorage.setItem("user", JSON.stringify(data)); // { email, token }
-      setIsAuthenticated(true); // update auth state in App.jsx
+    if (data) {
+      setIsAuthenticated(true);
       navigate("/");
-    } catch (err) {
-      setError("Something went wrong");
     }
   };
 
@@ -51,19 +38,19 @@ const Signup = ({ setIsAuthenticated }) => {
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <label>Full Name:</label>
-        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        <input {...fullName} />
 
         <label>Email:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input {...email} />
 
         <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input {...password} />
 
         <label>Phone Number:</label>
-        <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+        <input {...phoneNumber} />
 
         <label>Gender:</label>
-        <select value={gender} onChange={(e) => setGender(e.target.value)}>
+        <select value={gender.value} onChange={gender.onChange}>
           <option value="">Select</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
@@ -71,10 +58,10 @@ const Signup = ({ setIsAuthenticated }) => {
         </select>
 
         <label>Date of Birth:</label>
-        <input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
+        <input {...dateOfBirth} />
 
         <label>Account Type:</label>
-        <select value={accountType} onChange={(e) => setAccountType(e.target.value)}>
+        <select value={accountType.value} onChange={accountType.onChange}>
           <option value="">Select</option>
           <option value="Active">Active</option>
           <option value="Inactive">Inactive</option>
