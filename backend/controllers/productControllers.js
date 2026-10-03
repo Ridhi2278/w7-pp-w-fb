@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const createProduct = async (req, res, next) => {
   try {
-    const product = new Product(req.body);
+    const product = new Product({ ...req.body, user_id: req.user._id });
     const savedProduct = await product.save();
     res.status(201).json(savedProduct);
   } catch (error) {

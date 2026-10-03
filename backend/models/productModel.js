@@ -28,6 +28,11 @@ const productSchema = new mongoose.Schema(
       contactPhone: { type: String, required: true },
       isVerified: { type: Boolean, default: false },
     },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   { timestamps: true }
 );
