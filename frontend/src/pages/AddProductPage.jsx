@@ -14,6 +14,10 @@ const AddProductPage = () => {
   const [contactPhone, setContactPhone] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
+  // Iteration 7: get the token from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user ? user.token : null;
+
   const submitForm = async (e) => {
     e.preventDefault();
 
@@ -36,6 +40,7 @@ const AddProductPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Iteration 7: send the token
         },
         body: JSON.stringify(newProduct),
       });
@@ -57,7 +62,6 @@ const AddProductPage = () => {
 
       <form onSubmit={submitForm}>
         <label>Product Name:</label>
-
         <input
           type="text"
           required
@@ -66,7 +70,6 @@ const AddProductPage = () => {
         />
 
         <label>Category:</label>
-
         <select
           required
           value={category}
@@ -81,7 +84,6 @@ const AddProductPage = () => {
         </select>
 
         <label>Description:</label>
-
         <textarea
           required
           value={description}
@@ -89,7 +91,6 @@ const AddProductPage = () => {
         />
 
         <label>Price:</label>
-
         <input
           type="number"
           required
@@ -98,66 +99,49 @@ const AddProductPage = () => {
         />
 
         <label>Inventory Count:</label>
-
         <input
           type="number"
           required
           value={inventoryCount}
-          onChange={(e) =>
-            setInventoryCount(e.target.value)
-          }
+          onChange={(e) => setInventoryCount(e.target.value)}
         />
 
         <h3>Supplier</h3>
 
         <label>Supplier Name:</label>
-
         <input
           type="text"
           required
           value={supplierName}
-          onChange={(e) =>
-            setSupplierName(e.target.value)
-          }
+          onChange={(e) => setSupplierName(e.target.value)}
         />
 
         <label>Contact Email:</label>
-
         <input
           type="email"
           required
           value={contactEmail}
-          onChange={(e) =>
-            setContactEmail(e.target.value)
-          }
+          onChange={(e) => setContactEmail(e.target.value)}
         />
 
         <label>Contact Phone:</label>
-
         <input
           type="text"
           required
           value={contactPhone}
-          onChange={(e) =>
-            setContactPhone(e.target.value)
-          }
+          onChange={(e) => setContactPhone(e.target.value)}
         />
 
         <label>
           <input
             type="checkbox"
             checked={isVerified}
-            onChange={(e) =>
-              setIsVerified(e.target.checked)
-            }
-          />
-
-          {" "}Verified supplier
+            onChange={(e) => setIsVerified(e.target.checked)}
+          />{" "}
+          Verified supplier
         </label>
 
-        <button type="submit">
-          Add Product
-        </button>
+        <button type="submit">Add Product</button>
       </form>
     </div>
   );

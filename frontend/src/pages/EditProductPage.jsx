@@ -15,6 +15,10 @@ const EditProductPage = () => {
   const [contactPhone, setContactPhone] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
+  // Iteration 7: get the token from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user ? user.token : null;
+
   useEffect(() => {
     const fetchProduct = async () => {
       const res = await fetch(`/api/products/${id}`);
@@ -61,6 +65,7 @@ const EditProductPage = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Iteration 7: send the token
       },
       body: JSON.stringify(updatedProduct),
     });

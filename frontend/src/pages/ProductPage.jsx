@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-const ProductPage = () => {
+const ProductPage = ({ isAuthenticated }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+
+  // Iteration 7: get the token from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user ? user.token : null;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,6 +35,9 @@ const ProductPage = () => {
 
     const res = await fetch(`/api/products/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`, // Iteration 7: send the token
+      },
     });
 
     if (!res.ok) {
@@ -84,15 +91,20 @@ const ProductPage = () => {
         {product.supplier.isVerified ? "Yes" : "No"}
       </p>
 
-      <Link to={`/edit/${id}`}>Edit</Link>
+      {/* Iteration 7: show Edit and Delete only when logged in */}
+      {isAuthenticated && (
+        <>
+          <Link to={`/edit/${id}`}>Edit</Link>
 
-      <br />
-      <br />
+          <br />
+          <br />
 
-      <button onClick={handleDelete}>Delete</button>
+          <button onClick={handleDelete}>Delete</button>
 
-      <br />
-      <br />
+          <br />
+          <br />
+        </>
+      )}
 
       <Link to="/">Back</Link>
     </div>

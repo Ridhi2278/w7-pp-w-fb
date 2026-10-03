@@ -1,19 +1,55 @@
-const express = require('express');
-const cors = require('cors');
-const productRouter = require('./routes/productRouter');
-const userRouter = require('./routes/userRouter');
-const { requestLogger, unknownEndpoint, errorHandler } = require('./middleware/customMiddleware');
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import HomePage from "./pages/HomePage";
+import AddProductPage from "./pages/AddProductPage";
+import ProductPage from "./pages/ProductPage";
+import EditProductPage from "./pages/EditProductPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 
-const app = express();
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("user")
+  );
 
-app.use(cors());
-app.use(express.json());
-app.use(requestLogger);
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <Navbar
+          isAuthenticated={isAuthenticated}
+          setIsAuthenticated={setIsAuthenticated}
+        />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/products/:id"
+              element={<ProductPage isAuthenticated={isAuthenticated} />}
+            />
+            <Route
+              path="/add-product"
+              element={isAuthenticated ? <AddProductPage /> : <Navigate to="/signup" />}
+            />
+            <Route
+              path="/edit/:id"
+              element={isAuthenticated ? <EditProductPage /> : <Navigate to="/signup" />}
+            />
+            <Route
+              path="/signup"
+              element={<Signup setIsAuthenticated={setIsAuthenticated} />}
+            />
+            <Route
+              path="/login"
+              element={<Login setIsAuthenticated={setIsAuthenticated} />}
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </div>
+  );
+};
 
-app.use('/api/products', productRouter);
-app.use('/api/users', userRouter);
-
-app.use(unknownEndpoint);
-app.use(errorHandler);
-
-module.exports = app;
+export default App;
