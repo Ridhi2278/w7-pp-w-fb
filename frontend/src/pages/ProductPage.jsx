@@ -6,7 +6,6 @@ const ProductPage = ({ isAuthenticated }) => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
 
-  // Iteration 7: get the token from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user ? user.token : null;
 

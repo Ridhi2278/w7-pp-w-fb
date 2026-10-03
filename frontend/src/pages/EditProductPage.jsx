@@ -15,7 +15,6 @@ const EditProductPage = () => {
   const [contactPhone, setContactPhone] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
-  // Iteration 7: get the token from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user ? user.token : null;
 
