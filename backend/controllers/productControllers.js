@@ -1,9 +1,11 @@
 const Product = require('../models/productModel');
 const mongoose = require('mongoose');
 
+
 const createProduct = async (req, res, next) => {
   try {
-    const product = new Product(req.body);
+    const user_id = req.user._id; 
+    const product = new Product({ ...req.body, user_id });
     const savedProduct = await product.save();
     res.status(201).json(savedProduct);
   } catch (error) {
@@ -20,7 +22,7 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
-// Iteration 4: GET /api/products/:productId
+
 const getProductById = async (req, res, next) => {
   const { productId } = req.params;
 
@@ -41,7 +43,7 @@ const getProductById = async (req, res, next) => {
   }
 };
 
-// Iteration 5: PUT /api/products/:productId
+
 const updateProduct = async (req, res, next) => {
   const { productId } = req.params;
 
@@ -53,7 +55,7 @@ const updateProduct = async (req, res, next) => {
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       { ...req.body },
-      { new: true, runValidators: true } // return the doc AFTER update + validate
+      { new: true, runValidators: true } 
     );
 
     if (!updatedProduct) {
