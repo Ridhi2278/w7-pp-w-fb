@@ -9,9 +9,11 @@ const {
   deleteProduct,
 } = require('../controllers/productControllers');
 
+// Public routes: no token needed
 router.get('/', getAllProducts);
 router.get('/:productId', getProductById);
 
+// Every route BELOW this line requires a valid token
 router.use(requireAuth);
 
 router.post('/', createProduct);
